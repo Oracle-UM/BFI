@@ -5,3 +5,5 @@ Yet another brainfuck interpreter.
 - cell width: 8 bit
 - signedness: unsigned
 - EOF behavior: ignore input
+- Memory wrapping: yes
+- Cell wrapping: yes

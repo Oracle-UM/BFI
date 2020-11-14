@@ -128,8 +128,9 @@ auto main(int argc, char* argv[]) -> int {
 
     auto mem_buf = std::array<unsigned char, MEM_BUF_SIZE>();
     auto data_ptr = mem_buf.data();
-    auto const mem_buf_begin = mem_buf.cbegin();
-    auto const mem_buf_end = mem_buf.cend();
+    auto const mem_buf_begin = mem_buf.begin();
+    auto const mem_buf_end = mem_buf.end();
+    auto const mem_buf_last = mem_buf_end - 1;
 
     auto const loop_stack = static_cast<char const**>(
         ::operator new (open_bracket_count * sizeof(char*), std::nothrow)
@@ -174,32 +175,18 @@ auto main(int argc, char* argv[]) -> int {
             --(*data_ptr);
             break;
         case '>':
-            if (data_ptr == mem_buf_end) {
-                fmt::print(
-                    stderr,
-                    "{prog_name}: tried incrementing data pointer beyond last "
-                        "available memory address {addr}.\n",
-                    "prog_name"_a = program_name,
-                    "addr"_a = fmt::ptr(mem_buf_end)
-                );
-                ::operator delete(loop_stack);
-                return try_munmap();
+            if (data_ptr == mem_buf_last) {
+                data_ptr = mem_buf_begin;
+            } else {
+                ++data_ptr;
             }
-            ++data_ptr;
             break;
         case '<':
             if (data_ptr == mem_buf_begin) {
-                fmt::print(
-                    stderr,
-                    "{prog_name}: tried decrementing data pointer beyond first "
-                        "available memory address {addr}.\n",
-                    "prog_name"_a = program_name,
-                    "addr"_a = fmt::ptr(mem_buf_begin)
-                );
-                ::operator delete(loop_stack);
-                return try_munmap();
+                data_ptr = mem_buf_last;
+            } else {
+                --data_ptr;
             }
-            --data_ptr;
             break;
         case '.':
             if (data_ptr == mem_buf_end) {
