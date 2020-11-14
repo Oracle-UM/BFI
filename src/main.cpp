@@ -11,9 +11,8 @@ auto main(int argc, char* argv[]) -> int {
     if (argc < 2) {
         fmt::print(
             stderr,
-            "{prog_name}: invalid argument count.\nExpected 1, got {n_args}.\n",
-            "prog_name"_a = program_name,
-            "n_args"_a = argc - 1
+            "{prog_name}: Expected source file filename.\n",
+            "prog_name"_a = program_name
         );
         return EXIT_FAILURE;
     }
