@@ -219,6 +219,17 @@ auto main(int argc, char* argv[]) -> int {
             }
             break;
         case '[':
+            if (data_ptr == mem_buf_end) {
+                fmt::print(
+                    stderr,
+                    "{prog_name}: tried reading from invalid memory address "
+                        "{addr}.\n",
+                    "prog_name"_a = program_name,
+                    "addr"_a = fmt::ptr(mem_buf_end)
+                );
+                ::operator delete(loop_stack);
+                return try_munmap();
+            }
             if (*data_ptr != '\0') {
                 *loop_stack_ptr++ = src_iter;
             } else {
@@ -237,6 +248,15 @@ auto main(int argc, char* argv[]) -> int {
             }
             break;
         case ']':
+            if (loop_stack_ptr == loop_stack) {
+                fmt::print(
+                    stderr,
+                    "{prog_name}: unexpected end of loop.\n",
+                    "prog_name"_a = program_name
+                );
+                ::operator delete(loop_stack);
+                return try_munmap();
+            }
             src_iter = *--loop_stack_ptr - 1;
             break;
         default:
