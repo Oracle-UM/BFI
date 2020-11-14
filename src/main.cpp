@@ -6,7 +6,7 @@ auto main(int argc, char* argv[]) -> int {
     using namespace fmt::literals;
     char constexpr program_name[] = "bfi";
 
-    enum : std::size_t { MEM_BUF_SIZE = 30'720'000 }; // 30KiB
+    enum : std::size_t { MEM_BUF_SIZE = 30'720 }; // 30KiB
 
     if (argc < 2) {
         fmt::print(
